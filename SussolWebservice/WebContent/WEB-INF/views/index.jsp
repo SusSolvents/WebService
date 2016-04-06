@@ -55,7 +55,7 @@
           <h5 class="header col s12 light">Explore all our algorithms and their usages. It's for free!</h5>
         </div>
         <div class="row center">
-        <a class="modal-trigger btn" id="btnMore" href="#modal1">Get your own API key now!</a>
+        <a class="modal-trigger btn" id="btnMore" href="#modalapi">Get your own API key now!</a>
           
         </div>
         <br><br>
@@ -67,6 +67,9 @@
 
    <div>
  	<jsp:include page="/WEB-INF/views/partialCanopy.jsp"/>
+ </div>
+ <div>
+ 	<jsp:include page="/WEB-INF/views/partialApiKey.jsp"/>
  </div>
  <div>
  	<jsp:include page="/WEB-INF/views/partialCobweb.jsp"/>
@@ -215,11 +218,11 @@
         <div class="card-panel grey lighten-5 z-depth-4 valign-wrapper">
           <div class="valign-wrapper">
             <div class="col s4">
-              <img src="http://graph.facebook.com/764564632/picture?type=large" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+              <a href="https://www.linkedin.com/in/jonah-jordan-b377aa50"><img src="/resources/img/profile_jonah.jpg" alt="" class="circle responsive-img"></a> <!-- notice the "circle" class -->
             </div>
             <div class="col s8">
               <span class="black-text">
-                This is a square image. Add the "circle" class to it to make it appear circular.
+                Jonah Jordan</br>Student Software Management. Passionate about programming web solutions.
               </span>
             </div>
           </div>
@@ -229,11 +232,11 @@
         <div class="card-panel grey lighten-5 z-depth-4 valign-wrapper">
           <div class="valign-wrapper">
             <div class="col s4">
-              <img src="http://graph.facebook.com/764564632/picture?type=large" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+              <img src="/resources/img/profile_lennie.jpg" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
             </div>
             <div class="col s8">
               <span class="black-text">
-                This is a square image. Add the "circle" class to it to make it appear circular.
+                Lennart Boeckx</br>Student Software Management. Passionate about programming web solutions.
               </span>
             </div>
           </div>
