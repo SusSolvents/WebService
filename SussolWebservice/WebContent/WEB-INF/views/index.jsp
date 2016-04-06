@@ -8,7 +8,7 @@
 	<spring:url value="/resources/js/materialize.js" var="materializeJs" />
 	<spring:url value="/resources/js/materialize.min.js" var="materializeminJs" />
 	<spring:url value="/resources/js/init.js" var="initJs" />
-    	
+    <link rel="shortcut icon" href="/resources/img/logo50.png.ico">	
   <!--  Scripts-->
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
  	<script src="${materializeJs}"></script> 
@@ -34,13 +34,13 @@
 <body>
   <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo">Sussol</a>
+      <a id="logo-container" href="#" class="brand-logo"><img src="/resources/img/logo.png" alt="logo"></a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a href="#">Home</a></li>
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a href="#">Home</a></li>
       </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
@@ -207,11 +207,38 @@
   <footer class="page-footer teal">
     <div class="container">
       <div class="row">
-        <div class="col l6 s12">
+        <div class="col s12 m4">
           <h5 class="white-text">Who are we?</h5>
           <p class="grey-text text-lighten-4">We are two college students from Antwerp. We made this project for our internship at the company Qframe situated at Kontich, Belgium.</p>
         </div>
-        
+        <div class="col s12 m4">
+        <div class="card-panel grey lighten-5 z-depth-4 valign-wrapper">
+          <div class="valign-wrapper">
+            <div class="col s4">
+              <img src="http://graph.facebook.com/764564632/picture?type=large" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+            </div>
+            <div class="col s8">
+              <span class="black-text">
+                This is a square image. Add the "circle" class to it to make it appear circular.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s12 m4">
+        <div class="card-panel grey lighten-5 z-depth-4 valign-wrapper">
+          <div class="valign-wrapper">
+            <div class="col s4">
+              <img src="http://graph.facebook.com/764564632/picture?type=large" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+            </div>
+            <div class="col s8">
+              <span class="black-text">
+                This is a square image. Add the "circle" class to it to make it appear circular.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
     <div class="footer-copyright">
@@ -219,6 +246,7 @@
       Made by JJ & LB with lots of love and dedication
       </div>
     </div>
+    
   </footer>
 
 
