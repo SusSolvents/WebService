@@ -1,6 +1,6 @@
 <div id="modalapi" class="modal modal-fixed-footer">
     <div class="modal-content">
-      <h4>Get your own API key?</h4>
+      <h4>Your access starts here</h4>
       <hr/>
      <div class="row" style="margin-top: 30px">
     <form class="col s12">

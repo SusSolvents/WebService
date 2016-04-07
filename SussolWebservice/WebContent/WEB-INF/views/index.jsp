@@ -22,6 +22,14 @@
 	         opacity: .5,
 	    });
 	  });
+	$(document).ready(function(){
+	    $('.collapsible').collapsible({
+	      accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+	    });
+	  });
+	$(document).ready(function(){
+	    $('ul.tabs').tabs();
+	  });
 	
 	</script>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -34,15 +42,15 @@
 <body>
   <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo"><img src="/resources/img/logo.png" alt="logo"></a>
+      <a id="logo-container" href="/" class="brand-logo"><img src="/resources/img/logo.png" alt="logo"></a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="#">Home</a></li>
+        <li><a href="/">Home</a></li>
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
-        <li><a href="#">Home</a></li>
+        <li><a href="/">Home</a></li>
       </ul>
-      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+      <a href="/" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
   </nav>
 
@@ -55,9 +63,10 @@
           <h5 class="header col s12 light">Explore all our algorithms and their usages. It's for free!</h5>
         </div>
         <div class="row center">
-        <a class="modal-trigger btn" id="btnMore" href="#modalapi">Get your own API key now!</a>
-          
+        <a class="modal-trigger btn" id="btnMore" href="#modaltutorial">Getting started with sussol</a>
+        <a class="modal-trigger btn" id="btnMore" href="#modalapi">Get your own API key now!</a>  
         </div>
+        
         <br><br>
 
       </div>
@@ -67,6 +76,9 @@
 
    <div>
  	<jsp:include page="/WEB-INF/views/partialCanopy.jsp"/>
+ </div>
+  <div>
+ 	<jsp:include page="/WEB-INF/views/partialTutorial.jsp"/>
  </div>
  <div>
  	<jsp:include page="/WEB-INF/views/partialApiKey.jsp"/>
@@ -137,11 +149,11 @@
   </div>
 
 
-  <div class="parallax-container valign-wrapper" style="min-height: 20px">
+  <div class="parallax-container valign-wrapper" style="min-height: 90px">
     <div class="section no-pad-bot">
       <div class="container">
         <div class="row center">
-          
+          <h5 class="header col s12 light">A project in collaboration with QFrame and Weka Technologies</h5>
         </div>
       </div>
     </div>
