@@ -25,8 +25,19 @@ p {
   height: auto;
   color: rgba(255,255,255,.9);
 }
+
+.small {
+  min-height: 90px;
+  line-height: 0;
+  height: auto;
+  color: rgba(255,255,255,.9);
+}
+.margin{
+	margin-top: 80px;
+}
+
   .parallax-container .section {
-    width: 100%;
+    width: 100%; 
 }
 
 
@@ -36,6 +47,14 @@ p {
     position: absolute;
     top: 40%;
   }
+  .parallax-container .fix{
+    position: absolute;
+    top: 0%;
+  }
+  .margin{
+	margin-top: 10px;
+}
+  
   #index-banner .section {
     top: 10%;
   }
@@ -45,6 +64,10 @@ p {
   #index-banner .section {
     top: 0;
   }
+  .small {
+    height: 90px;
+  }
+  
 }
 
 .icon-block {

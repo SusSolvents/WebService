@@ -62,7 +62,7 @@
         <div class="row center">
           <h5 class="header col s12 light">Explore all our algorithms and their usages. It's for free!</h5>
         </div>
-        <div class="row center">
+        <div class="row center margin">
         <a class="modal-trigger btn" id="btnMore" href="#modaltutorial">Getting started with sussol</a>
         <a class="modal-trigger btn" id="btnMore" href="#modalapi">Get your own API key now!</a>  
         </div>
@@ -149,8 +149,8 @@
   </div>
 
 
-  <div class="parallax-container valign-wrapper" style="min-height: 90px">
-    <div class="section no-pad-bot">
+  <div class="parallax-container valign-wrapper small" >
+    <div class="section fix no-pad-bot">
       <div class="container">
         <div class="row center">
           <h5 class="header col s12 light">A project in collaboration with QFrame and Weka Technologies</h5>
@@ -184,7 +184,7 @@
 
             <p class="light">A self-organizing map (SOM) is a type of artificial neural network (ANN) that is trained using unsupervised learning to produce a two-dimensional, discretized representation of the input space of the training samples, called a map. They apply competitive learning as opposed to error-correction learning.</p>
             <div class="row center">
-        <a class="modal-trigger btn-flat" href="#modalsom">How to use Self-Organizing Map?</a>
+        <a class="modal-trigger btn-flat" href="#modalsom">How to use SOM?</a>
           
         </div>
           </div>
