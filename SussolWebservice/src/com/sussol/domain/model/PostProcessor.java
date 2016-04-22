@@ -89,7 +89,7 @@ public class PostProcessor
 			}
 		
 			clusters.add(new Cluster(i, featureValues));
-			webmodelClusters.add(new com.sussol.domain.model.data.JsonModel.WebCluster(i, new HashMap<>(), new ArrayList<>()));
+			webmodelClusters.add(new com.sussol.domain.model.data.JsonModel.WebCluster(i, new HashMap<Integer, Double>(), new ArrayList<WebSolvent>()));
 		}
 		return webmodelClusters;
 	}

@@ -2,6 +2,7 @@ package com.sussol.domain.model.data.JsonModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,11 +14,11 @@ public class WebCluster implements Serializable
 	
 	
 	
-	public WebCluster(int clusterNumber, Map<Integer, Double> distanceToCluster, List<WebSolvent> solvents) {
+	public WebCluster(int clusterNumber, HashMap<Integer, Double> hashMap, ArrayList<WebSolvent> arrayList) {
 		super();
 		this.clusterNumber = clusterNumber;
-		this.distanceToCluster = distanceToCluster;
-		this.solvents = solvents;
+		this.distanceToCluster = hashMap;
+		this.solvents = arrayList;
 	}
 	
 	public int getClusterNumber() {

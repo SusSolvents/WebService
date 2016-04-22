@@ -11,19 +11,15 @@ import java.util.ArrayList;
 
 import com.sussol.domain.utilities.Globals;
 
-
-
-
-
 public class ArffGenerator 
 {
 	private String pathToCsvFile;
 	private String arffFileName;
-		
+	private static final String STORAGE_PATH = System.getenv("OPENSHIFT_DATA_DIR") == null ? "/uploads/" : System.getenv("OPENSHIFT_DATA_DIR");
 	public ArffGenerator(String absolutePathToCsvFile, String fileName) 
 	{		
 		this.pathToCsvFile = absolutePathToCsvFile;
-		this.arffFileName = "C:/arfffiles/" + fileName.substring(0, fileName.indexOf('.')) + ".arff";
+		this.arffFileName = STORAGE_PATH + fileName.substring(0, fileName.indexOf('.')) + ".arff";
 	}
 
 	public void generateSustainableSolventsArff()
@@ -135,7 +131,9 @@ public class ArffGenerator
 			
 		} 
 		catch (FileNotFoundException e) { System.out.println("File not found or could not be opened."); }
-		catch (IOException e) { System.out.println("Error reading from file."); }
+		catch (IOException e) { 
+			e.printStackTrace();
+			System.out.println("Error reading from file (ArffGen)."); }
 	}
 
 	public void generateSubFiles()
@@ -205,6 +203,9 @@ public class ArffGenerator
 			arffStreamData.close();
 		}
 		catch (FileNotFoundException e) { System.out.println("File not found or could not be opened."); }
-		catch (IOException e) { System.out.println("Error reading from file."); }
+		catch (IOException e) { 
+			e.printStackTrace();
+			System.out.println("Error reading from file."); 
+			}
 	}
 }
