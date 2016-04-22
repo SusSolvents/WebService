@@ -1,4 +1,5 @@
 package com.sussol.domain.options;
+
 public class KMeansOptions extends OptionsManager 
 {
 	public KMeansOptions() 

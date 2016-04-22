@@ -7,8 +7,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.sussol.domain.utilities.Globals;
+
+
+
+
 
 public class ArffGenerator 
 {
@@ -19,7 +24,6 @@ public class ArffGenerator
 	{		
 		this.pathToCsvFile = absolutePathToCsvFile;
 		this.arffFileName = "C:/arfffiles/" + fileName.substring(0, fileName.indexOf('.')) + ".arff";
-		
 	}
 
 	public void generateSustainableSolventsArff()
@@ -40,9 +44,17 @@ public class ArffGenerator
 			arffStream.write("@Relation get_the_clusters");
 			arffStream.write("\n\n");		
 			
-			String dataTypesLine = csvStream.readLine();		// Process attributes.
+			String dataTypesLine = csvStream.readLine();
+			Globals.featureNames = new ArrayList<>();
+			
+			// Process attributes.
             String[] attributes = dataTypesLine.split("\t");
 
+            for(int i = 5; i<attributes.length; i++)
+            {
+            	Globals.featureNames.add(attributes[i]);
+            	System.out.println(attributes[i]);
+            }
 			arffStream.write("% NumberOfFeatures : " + (attributes.length - 3) + "\n\n");
 			
             for (int i = 0; i < attributes.length; i++)
@@ -123,11 +135,7 @@ public class ArffGenerator
 			
 		} 
 		catch (FileNotFoundException e) { System.out.println("File not found or could not be opened."); }
-		catch (IOException e) { 
-			e.printStackTrace();
-			System.out.println(pathToCsvFile);
-			System.out.println("Error reading from file."); 
-			}
+		catch (IOException e) { System.out.println("Error reading from file."); }
 	}
 
 	public void generateSubFiles()
@@ -196,7 +204,7 @@ public class ArffGenerator
 			arffStreamOnlyData.close();
 			arffStreamData.close();
 		}
-		catch (FileNotFoundException e) { System.out.println("File not found or could nott be opened."); }
+		catch (FileNotFoundException e) { System.out.println("File not found or could not be opened."); }
 		catch (IOException e) { System.out.println("Error reading from file."); }
 	}
 }

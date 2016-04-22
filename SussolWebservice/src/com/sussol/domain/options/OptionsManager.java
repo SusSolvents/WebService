@@ -1,5 +1,4 @@
 package com.sussol.domain.options;
-
 public class OptionsManager 
 {	
 	protected String[] options;
@@ -28,6 +27,7 @@ public class OptionsManager
 				return options[i + 1]; 
 			}
 		}
+		
 		return "0";
 	}
 	

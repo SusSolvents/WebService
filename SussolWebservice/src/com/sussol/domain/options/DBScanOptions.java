@@ -1,5 +1,4 @@
 package com.sussol.domain.options;
-
 public class DBScanOptions extends OptionsManager 
 {
 	public DBScanOptions() 

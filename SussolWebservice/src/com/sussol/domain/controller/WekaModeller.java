@@ -1,16 +1,16 @@
 package com.sussol.domain.controller;
 
 
-import java.util.Calendar;
+import java.util.Date;
+
+import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
 
 import com.sussol.domain.model.InputProcessor;
 import com.sussol.domain.model.PostProcessor;
-import com.sussol.domain.model.data.webmodel.WekaModel;
-import com.sussol.domain.model.data.webmodel.WekaResult;
+import com.sussol.domain.model.data.JsonModel.Model;
 import com.sussol.domain.options.OptionsManager;
 import com.sussol.domain.utilities.Globals.Algorithm;
-import com.sussol.domain.utilities.Globals;
-import com.sussol.domain.utilities.SolventLogger;
+import com.sussol.domain.utilities.LiatoLogger;
 
 import weka.clusterers.Canopy;
 import weka.clusterers.ClusterEvaluation;
@@ -20,24 +20,22 @@ import weka.clusterers.EM;
 import weka.clusterers.SelfOrganizingMap;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;
+import weka.core.SerializationHelper;
 
 public class WekaModeller 
 {	
-	public WekaModel makeModel(Algorithm algorithm, OptionsManager optionsManager)
+	public Model makeModel(Algorithm algorithm, OptionsManager optionsManager, String trainingFileName)
 	{		
+		Model wekaModel = new Model();
+		wekaModel.setAlgorithm(algorithm);
+		wekaModel.setDate(new Date().toString());
+		wekaModel.setDataSet(trainingFileName);
+		
 		Instances trainInstances = InputProcessor.getTrainInstances();
 		Instances testInstances = InputProcessor.getTestInstances();	
 		Clusterer clusterer = null;
-		
-		String[] array = new String[optionsManager.getOptions().length];
-		for (int i = 0; i < optionsManager.getOptions().length; i++) {
-			array[i] = optionsManager.getOptions()[i];
-		}
-		WekaModel wekaModel = new WekaModel(Globals.fileName, Calendar.getInstance().getTime().toString(), algorithm, array);
-		WekaResult wekaResult = new WekaResult();
-		
-		SolventLogger.getInstance().info(optionsManager.getOptionsForLogging());
-		
+		String STORAGE_PATH = System.getenv("OPENSHIFT_DATA_DIR") == null ? "/uploads/" : System.getenv("OPENSHIFT_DATA_DIR");
+		LiatoLogger.getInstance().info(optionsManager.getOptionsForLogging());	
 		try 
 		{
 			switch (algorithm)
@@ -81,28 +79,42 @@ public class WekaModeller
 			evaluation.setClusterer(clusterer);                           // the clusterer to evaluate
 			evaluation.evaluateClusterer(testInstances);                  // data to evaluate the clusterer on			
 
+			String modelFileName = trainingFileName.substring(0, trainingFileName.indexOf('.'));
+			wekaModel.setModelPath(STORAGE_PATH + modelFileName + " Canopy.model");
 			switch (algorithm)
 			{
 				case CANOPY:
-					// PostProcessor.ProcessClustersCanopy(evaluation);
-					PostProcessor.processClusters(wekaResult,evaluation);
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+										
+					// Serialize the model to disk.		
+					SerializationHelper.write(STORAGE_PATH  + modelFileName + " Canopy.model", clusterer);
+					System.out.println(STORAGE_PATH);
 					break;
 				case COBWEB:
-					PostProcessor.ProcessClustersCobWeb(wekaResult,evaluation);
+					PostProcessor.ProcessClustersCobWeb(evaluation);
+					
+					// Serialize the model to disk.		
+					SerializationHelper.write(STORAGE_PATH  + modelFileName + " CobWeb.model", clusterer);
 					break;
 				case DBSCAN:					
 					break;
 				case EM:
-					// PostProcessor.ProcessClustersEM(evaluation);
-					PostProcessor.processClusters(wekaResult, evaluation);
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
+					// Serialize the model to disk.		
+					SerializationHelper.write(STORAGE_PATH  + modelFileName + " EM.model", clusterer);
 					break;
 				case KMEANS:
-					// PostProcessor.ProcessClustersKMeans(evaluation);
-					PostProcessor.processClusters(wekaResult, evaluation);
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
+					// Serialize the model to disk.		
+					SerializationHelper.write(STORAGE_PATH  + modelFileName + " KMeans.model", clusterer);
 					break;
 				case SOM:
-					// PostProcessor.ProcessClustersSOM(evaluation);
-					PostProcessor.processClusters(wekaResult,evaluation);
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
+					// Serialize the model to disk.		
+					SerializationHelper.write(STORAGE_PATH  + modelFileName + " SOM.model", clusterer);
 					break;
 				case XMEANS:
 					break;
@@ -110,20 +122,14 @@ public class WekaModeller
 					break;
 			}	
 			
-			PostProcessor.ProcessClusterAssignments(evaluation, algorithm);
+			PostProcessor.ProcessClusterAssignments(evaluation, algorithm, wekaModel);
 			
-			// Serialize the model to disk.		
-			// SerializationHelper.write("models/model.model", clusterer);
-
-			wekaModel.setWekaResult(wekaResult);
-			wekaModel.setFulLog(Globals.log);
-			SolventLogger.getInstance().closeLogger();
 			return wekaModel;
+
 		} 
 		catch (Exception e) { e.printStackTrace(); }				
-		SolventLogger.getInstance().closeLogger();
-		return wekaModel;
+		return null;
 	}
 	
-		
+	
 }

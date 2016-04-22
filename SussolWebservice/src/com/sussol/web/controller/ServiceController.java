@@ -28,8 +28,7 @@ import com.opencsv.CSVReader;
 import com.sun.org.apache.regexp.internal.recompile;
 import com.sussol.domain.controller.WekaModeller;
 import com.sussol.domain.model.ArffGenerator;
-
-import com.sussol.domain.model.data.webmodel.WekaModel;
+import com.sussol.domain.model.data.JsonModel.Model;
 import com.sussol.domain.options.CanopyOptions;
 import com.sussol.domain.options.CobWebOptions;
 import com.sussol.domain.options.EMOptions;
@@ -45,11 +44,11 @@ import com.sussol.domain.utilities.Globals.Algorithm;
 public class ServiceController {
 	
 	@Autowired private ServletContext servletContext;
-	
+	private static final String STORAGE_PATH = System.getenv("OPENSHIFT_DATA_DIR") == null ? "/uploads/" : System.getenv("OPENSHIFT_DATA_DIR");
 	private File fileConverter(MultipartFile multipartFile)
 	{
 		System.out.println(multipartFile.getOriginalFilename());
-		File convFile = new File("C:/jamie/" +  multipartFile.getOriginalFilename());
+		File convFile = new File(STORAGE_PATH + multipartFile.getOriginalFilename());
 	    try {
 			convFile.createNewFile();
 			FileOutputStream fos = new FileOutputStream(convFile); 
@@ -71,15 +70,15 @@ public class ServiceController {
 		}else {
 			file = fileConverter(multipartFile);
 		}
-			Globals.fileName = file.getName();
+			Globals.trainingFileName = file.getName();
 	    	Globals.pathToArffFile += file.getName();
 	    	ArffGenerator arffGenerator = new ArffGenerator(file.getAbsolutePath(), file.getName());
 	    	arffGenerator.generateSustainableSolventsArff();
 	    	arffGenerator.generateSubFiles();
 	}
 	
-	@RequestMapping(value = "/canopy" , method= RequestMethod.POST, consumes="multipart/form-data")
-	public @ResponseBody WekaModel canopyModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "t1", defaultValue = "-1.25", required=false) String t1, @RequestParam(value = "t2", defaultValue = "-1.0", required=false) String t2)
+	@RequestMapping(value = "/model/canopy" , method= RequestMethod.POST, consumes="multipart/form-data")
+	public @ResponseBody Model canopyModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "t1", defaultValue = "-1.25", required=false) String t1, @RequestParam(value = "t2", defaultValue = "-1.0", required=false) String t2)
 	{
 		initializeAPI(file);
 		OptionsManager canopyOptions = new CanopyOptions();
@@ -87,10 +86,10 @@ public class ServiceController {
 		canopyOptions.setOption("t2", t2);
 		
 		WekaModeller modeller = new WekaModeller();
-		return modeller.makeModel(Algorithm.CANOPY, canopyOptions);
+		return modeller.makeModel(Algorithm.CANOPY, canopyOptions, "matrix.csv");
 	}
-	@RequestMapping(value = "/cobweb" , method= RequestMethod.POST, consumes="multipart/form-data")
-	public @ResponseBody WekaModel cobwebModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "A", defaultValue = "1.0", required=false) String A, @RequestParam(value = "C", defaultValue = "0.05", required=false) String C, @RequestParam(value = "S", defaultValue = "100", required=false) String S)
+	@RequestMapping(value = "/model/cobweb" , method= RequestMethod.POST, consumes="multipart/form-data")
+	public @ResponseBody Model cobwebModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "A", defaultValue = "1.0", required=false) String A, @RequestParam(value = "C", defaultValue = "0.05", required=false) String C, @RequestParam(value = "S", defaultValue = "100", required=false) String S)
 	{
 		initializeAPI(file);
 		OptionsManager cobwebOptions = new CobWebOptions();
@@ -99,43 +98,43 @@ public class ServiceController {
 		cobwebOptions.setOption("-S", S);
 		
 		WekaModeller modeller = new WekaModeller();
-		return modeller.makeModel(Algorithm.COBWEB, cobwebOptions);
+		return modeller.makeModel(Algorithm.COBWEB, cobwebOptions, "matrix.csv");
 	}
 	
-	@RequestMapping(value = "/em" , method= RequestMethod.POST, consumes="multipart/form-data")
-	public @ResponseBody WekaModel emModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "clusters", defaultValue = "-1.0", required=false) String clusters)
+	@RequestMapping(value = "/model/em" , method= RequestMethod.POST, consumes="multipart/form-data")
+	public @ResponseBody Model emModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "clusters", defaultValue = "-1.0", required=false) String clusters)
 	{
 		initializeAPI(file);
 		OptionsManager emOptions = new EMOptions();
 		emOptions.setOption("-N", clusters);
 		
 		WekaModeller modeller = new WekaModeller();
-		return modeller.makeModel(Algorithm.EM, emOptions);
+		return modeller.makeModel(Algorithm.EM, emOptions, "matrix.csv");
 	}
 	
-	@RequestMapping(value = "/kmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
-	public @ResponseBody WekaModel kmeansModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "clusters", defaultValue = "4", required=false) String clusters)
+	@RequestMapping(value = "/model/kmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
+	public @ResponseBody Model kmeansModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "clusters", defaultValue = "4", required=false) String clusters)
 	{
 		initializeAPI(file);
 		OptionsManager options = new KMeansOptions();
 		options.setOption("-N", clusters);
 		
 		WekaModeller modeller = new WekaModeller();
-		return modeller.makeModel(Algorithm.KMEANS, options);
+		return modeller.makeModel(Algorithm.KMEANS, options, "matrix.csv");
 	}
-	@RequestMapping(value = "/som" , method= RequestMethod.POST, consumes="multipart/form-data")
-	public @ResponseBody WekaModel somModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "learningrate", defaultValue = "1.0", required=false) String learningrate)
+	@RequestMapping(value = "/model/som" , method= RequestMethod.POST, consumes="multipart/form-data")
+	public @ResponseBody Model somModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "learningrate", defaultValue = "1.0", required=false) String learningrate)
 	{
 		initializeAPI(file);
 		OptionsManager options = new SOMOptions();
 		options.setOption("-N", learningrate);
 		
 		WekaModeller modeller = new WekaModeller();
-		return modeller.makeModel(Algorithm.SOM, options);
+		return modeller.makeModel(Algorithm.SOM, options, "matrix.csv");
 	}
 	
-	@RequestMapping(value = "/xmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
-	public @ResponseBody WekaModel xmeansModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "I", defaultValue = "1", required=false) String I,@RequestParam(value = "L", defaultValue = "2", required=false) String L,@RequestParam(value = "H", defaultValue = "4", required=false) String H)
+	@RequestMapping(value = "/model/xmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
+	public @ResponseBody Model xmeansModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "I", defaultValue = "1", required=false) String I,@RequestParam(value = "L", defaultValue = "2", required=false) String L,@RequestParam(value = "H", defaultValue = "4", required=false) String H)
 	{
 		initializeAPI(file);
 		OptionsManager options = new XMeansOptions();
@@ -143,6 +142,6 @@ public class ServiceController {
 		options.setOption("-L", L);
 		options.setOption("-H", H);
 		WekaModeller modeller = new WekaModeller();
-		return modeller.makeModel(Algorithm.XMEANS, options);
+		return modeller.makeModel(Algorithm.XMEANS, options, "matrix.csv");
 	}
 }

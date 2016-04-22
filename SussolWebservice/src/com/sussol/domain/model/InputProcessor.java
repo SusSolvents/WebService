@@ -1,4 +1,5 @@
 package com.sussol.domain.model;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,7 +50,7 @@ public class InputProcessor
 	{
 		ArrayList<SolventData> solvents = new ArrayList<>();
 		
-		int solventcounter = 0;
+		int solventCounter = 0;
 		try
 		{
 			File file = new File(Globals.pathToArffFileOnlyData);	
@@ -60,7 +61,7 @@ public class InputProcessor
 		    while((line = bufferedReader.readLine()) != null)
 		    {
 		    	solventString = line.split(Pattern.quote("|"));
-		    	solvents.add(new SolventData(solventcounter++, solventString));
+		    	solvents.add(new SolventData(solventCounter++, solventString));
 		    }
 		    
 		    bufferedReader.close();		    

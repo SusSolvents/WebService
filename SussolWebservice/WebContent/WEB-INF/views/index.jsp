@@ -64,7 +64,6 @@
         </div>
         <div class="row center margin">
         <a class="modal-trigger btn" id="btnMore" href="#modaltutorial">Getting started with sussol</a>
-        <a class="modal-trigger btn" id="btnMore" href="#modalapi">Get your own API key now!</a>  
         </div>
         
         <br><br>
