@@ -19,6 +19,7 @@ import weka.clusterers.Cobweb;
 import weka.clusterers.EM;
 import weka.clusterers.SelfOrganizingMap;
 import weka.clusterers.SimpleKMeans;
+import weka.clusterers.XMeans;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 
@@ -43,11 +44,12 @@ public class WekaModeller
 				case CANOPY:
 					clusterer = new Canopy();
 					((Canopy) clusterer).setOptions(optionsManager.getOptions());
+					
 					break;
-				case COBWEB:
-					clusterer = new Cobweb();
-					((Cobweb) clusterer).setOptions(optionsManager.getOptions());
-					break;
+				//case COBWEB:
+				//	clusterer = new Cobweb();
+				//	((Cobweb) clusterer).setOptions(optionsManager.getOptions());
+				//	break;
 //				case DBSCAN:
 //					clusterer = new DBScan();
 //					((DBScan) clusterer).setOptions(optionsManager.getOptions());
@@ -59,15 +61,16 @@ public class WekaModeller
 				case KMEANS:
 					clusterer = new SimpleKMeans();
 					((SimpleKMeans) clusterer).setOptions(optionsManager.getOptions());
+					
 					break;
 				case SOM:
 					clusterer = new SelfOrganizingMap();
 					((SelfOrganizingMap) clusterer).setOptions(optionsManager.getOptions());
 					break;
-//				case XMEANS:
-//					clusterer = new XMeans();
-//					((XMeans) clusterer).setOptions(optionsManager.getOptions());
-//					break;
+				case XMEANS:
+				clusterer = new XMeans();
+					((XMeans) clusterer).setOptions(optionsManager.getOptions());
+					break;
 
 				default:
 					break;
@@ -79,8 +82,9 @@ public class WekaModeller
 			evaluation.setClusterer(clusterer);                           // the clusterer to evaluate
 			evaluation.evaluateClusterer(testInstances);                  // data to evaluate the clusterer on			
 
+		
 			String modelFileName = trainingFileName.substring(0, trainingFileName.indexOf('.'));
-			wekaModel.setModelPath(STORAGE_PATH + modelFileName + " Canopy.model");
+			
 			switch (algorithm)
 			{
 				case CANOPY:
@@ -88,13 +92,14 @@ public class WekaModeller
 										
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " Canopy.model", clusterer);
-					System.out.println(STORAGE_PATH);
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " Canopy.model");		
 					break;
 				case COBWEB:
 					PostProcessor.ProcessClustersCobWeb(evaluation);
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " CobWeb.model", clusterer);
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " CobWeb.model");
 					break;
 				case DBSCAN:					
 					break;
@@ -103,20 +108,29 @@ public class WekaModeller
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " EM.model", clusterer);
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " EM.model");
 					break;
 				case KMEANS:
 					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " KMeans.model", clusterer);
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " KMeans.model");
 					break;
 				case SOM:
 					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " SOM.model", clusterer);
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " SOM.model");
 					break;
 				case XMEANS:
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
+					// Serialize the model to disk.		
+					SerializationHelper.write(STORAGE_PATH  + modelFileName + " XMEANS.model", clusterer);
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " XMEANS.model");
+					
 					break;
 				default:
 					break;

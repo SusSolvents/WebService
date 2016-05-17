@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 import com.sussol.domain.utilities.Globals;
 
+import sun.management.counter.Variability;
+
 public class ArffGenerator 
 {
 	private String pathToCsvFile;
@@ -21,7 +23,7 @@ public class ArffGenerator
 		this.pathToCsvFile = absolutePathToCsvFile;
 		this.arffFileName = STORAGE_PATH + fileName.substring(0, fileName.indexOf('.')) + ".arff";
 	}
-
+	
 	public void generateSustainableSolventsArff()
 	{
 		try 
@@ -40,17 +42,24 @@ public class ArffGenerator
 			arffStream.write("@Relation get_the_clusters");
 			arffStream.write("\n\n");		
 			
-			String dataTypesLine = csvStream.readLine();
-			Globals.featureNames = new ArrayList<>();
-			
-			// Process attributes.
+			String dataTypesLine = csvStream.readLine();		// Process attributes.
             String[] attributes = dataTypesLine.split("\t");
-
-            for(int i = 5; i<attributes.length; i++)
+            Globals.featureNames = new ArrayList<>();
+            
+            for(int i = 6; i<attributes.length; i++)
             {
-            	Globals.featureNames.add(attributes[i]);
-            	System.out.println(attributes[i]);
+            	System.out.println(attributes[i] + " original ");
+            	String featureName = attributes[i].replaceAll("°", "Degrees");
+            	featureName = featureName.replaceAll("/", "_");
+            	
+            	featureName = featureName.replaceAll("Â", "");
+            	featureName = featureName.replaceAll("\u00b0", "Degrees");
+            	
+            	featureName = featureName.replaceAll("\\.", "_");
+            	Globals.featureNames.add(featureName);
+            	System.out.println(featureName);
             }
+            
 			arffStream.write("% NumberOfFeatures : " + (attributes.length - 3) + "\n\n");
 			
             for (int i = 0; i < attributes.length; i++)
@@ -58,11 +67,12 @@ public class ArffGenerator
                 switch (i)
                 {
                     case 0: // Input
-                    case 3: // ID_EG_Nr
-                    case 4: // ID_EG_Annex_Nr
+                    case 4: // ID_EG_Nr
+                    case 5: // ID_EG_Annex_Nr
                         break;
                     case 1: // ID_Name_1
-                    case 2: // ID_CAS_Nr_1
+                    case 2: // Label Hannes
+                    case 3: // ID_CAS_Nr_1
                     	arffStream.write("@Attribute " + attributes[i] + " string\n");
                     	break;
                     default:
@@ -85,11 +95,12 @@ public class ArffGenerator
 	                switch (featureNumber)
 	                {
 	                    case 0: // Input	                    
-	                    case 3: // ID_EG_Nr
-	                    case 4: // ID_EG_Annex_Nr
+	                    case 4: // ID_EG_Nr
+	                    case 5: // ID_EG_Annex_Nr
 	                        break;
 	                    case 1: // ID_Name_1
-	                    case 2: // ID_CAS_Nr_1 
+	                    case 2: // Label Hannes
+	                    case 3: // ID_CAS_Nr_1
 	                    	arffStream.write('"' + values[featureNumber] + '"' + "|");
 	                    	break;	                    		                    		                   
 	                    default:
@@ -131,9 +142,7 @@ public class ArffGenerator
 			
 		} 
 		catch (FileNotFoundException e) { System.out.println("File not found or could not be opened."); }
-		catch (IOException e) { 
-			e.printStackTrace();
-			System.out.println("Error reading from file (ArffGen)."); }
+		catch (IOException e) { System.out.println("Error reading from file."); }
 	}
 
 	public void generateSubFiles()
@@ -160,7 +169,7 @@ public class ArffGenerator
 			{
 				file.createNewFile();
 			}
-			// Only data (no Name and CasNr), for training and making the model. Comma-separated.
+			// Only data (no Name, Label or CasNr), for training and making the model. Comma-separated.
 			BufferedWriter arffStreamData = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
 					
 			// Skip the first 4 lines.
@@ -173,12 +182,13 @@ public class ArffGenerator
 			tempLine = tempLine.substring(tempLine.indexOf(':') + 2, tempLine.length());
 			int nrOfFeatures = Integer.parseInt(tempLine);
 			
-			arffStreamData.write("% Number of features : " + (nrOfFeatures - 2) + "\n");
+			arffStreamData.write("% Number of features : " + (nrOfFeatures - 3) + "\n");
 			
 			arffStreamData.write(arffStream.readLine() + "\n");
-			arffStream.readLine();
-			arffStream.readLine();
-			for (int i=0; i < nrOfFeatures -2; i++)
+			arffStream.readLine();	// ID_Name
+			arffStream.readLine();	// Label
+			arffStream.readLine();	// ID_CAS_Nr_1
+			for (int i=0; i < nrOfFeatures - 3; i++)
 			{
 				arffStreamData.write(arffStream.readLine() + "\n");
 			}
@@ -203,9 +213,6 @@ public class ArffGenerator
 			arffStreamData.close();
 		}
 		catch (FileNotFoundException e) { System.out.println("File not found or could not be opened."); }
-		catch (IOException e) { 
-			e.printStackTrace();
-			System.out.println("Error reading from file."); 
-			}
+		catch (IOException e) { System.out.println("Error reading from file."); }
 	}
 }

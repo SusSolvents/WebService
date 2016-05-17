@@ -11,8 +11,10 @@ import java.util.List;
 import com.sussol.domain.model.data.Cluster;
 import com.sussol.domain.model.data.Result;
 import com.sussol.domain.model.data.SolventData;
+import com.sussol.domain.model.data.JsonModel.ClusterCenterDistance;
 import com.sussol.domain.model.data.JsonModel.Feature;
 import com.sussol.domain.model.data.JsonModel.Model;
+import com.sussol.domain.model.data.JsonModel.WebCluster;
 import com.sussol.domain.model.data.JsonModel.WebSolvent;
 import com.sussol.domain.utilities.Globals.Algorithm;
 import com.sussol.domain.utilities.Globals.SortKey;
@@ -25,7 +27,7 @@ import weka.clusterers.ClusterEvaluation;
 public class PostProcessor 
 {
 	private static ArrayList<Cluster> clusters;
-	private static List<com.sussol.domain.model.data.JsonModel.WebCluster> webmodelClusters;
+	private static List<WebCluster> webmodelClusters;
 	private static final int numberOfFeatures = 6;
 	
 	// TODO : bestudeer de code van
@@ -69,6 +71,7 @@ public class PostProcessor
 	public static List<com.sussol.domain.model.data.JsonModel.WebCluster> processClusters(ClusterEvaluation evaluation)
 	{								
 		String clusterResults = evaluation.clusterResultsToString();
+		
 		LiatoLogger.getInstance().info(clusterResults);		
 		
 		String clustersString = clusterResults.substring(clusterResults.indexOf("SOLVENTCLUSTERS") + 16, clusterResults.lastIndexOf("SOLVENTCLUSTERS"));
@@ -85,11 +88,13 @@ public class PostProcessor
 			for (int j = 1; j < doubleValues.length; j++)
 			{
 				doubleValues[j] = doubleValues[j].replaceAll(",",".");
+			
 				featureValues.add(new Double(doubleValues[j]));
 			}
+			System.out.println("\t");
 		
 			clusters.add(new Cluster(i, featureValues));
-			webmodelClusters.add(new com.sussol.domain.model.data.JsonModel.WebCluster(i, new HashMap<Integer, Double>(), new ArrayList<WebSolvent>()));
+			webmodelClusters.add(new com.sussol.domain.model.data.JsonModel.WebCluster(i, featureValues, new ArrayList<ClusterCenterDistance>(), new ArrayList<WebSolvent>()));
 		}
 		return webmodelClusters;
 	}
@@ -156,6 +161,7 @@ public class PostProcessor
 			}
 			com.sussol.domain.model.data.JsonModel.WebCluster cluster2 = wekaModel.getClusterWithNumber(results.get(i).getClusterNumber());
 			WebSolvent webSolvent = new WebSolvent(solvent.getCasNr(), solvent.getName(), features ,distance);
+			webSolvent.setPredictLabel(solvent.getLabel());
 			cluster2.addSolvent(webSolvent);
 		}
 		

@@ -9,30 +9,45 @@ import java.util.Map;
 public class WebCluster implements Serializable
 {
 	private int clusterNumber;
-	private Map<Integer, Double> distanceToCluster;
+	private List<ClusterCenterDistance> distanceToCluster;
 	private List<WebSolvent> solvents;
+	private ArrayList<Double> vectorData;
 	
 	
-	
-	public WebCluster(int clusterNumber, HashMap<Integer, Double> hashMap, ArrayList<WebSolvent> arrayList) {
+	public WebCluster(int clusterNumber, ArrayList<Double> vectorData ,ArrayList<ClusterCenterDistance> arrayList2, ArrayList<WebSolvent> arrayList) {
 		super();
 		this.clusterNumber = clusterNumber;
-		this.distanceToCluster = hashMap;
+		this.distanceToCluster = arrayList2;
 		this.solvents = arrayList;
+		this.vectorData = vectorData;
 	}
 	
+	
+	public ArrayList<Double> getVectorData() {
+		return vectorData;
+	}
+
+
+	public void setVectorData(ArrayList<Double> vectorData) {
+		this.vectorData = vectorData;
+	}
+
+
 	public int getClusterNumber() {
 		return clusterNumber;
 	}
 	public void setClusterNumber(int clusterNumber) {
 		this.clusterNumber = clusterNumber;
 	}
-	public Map<Integer, Double> getDistanceToCluster() {
+	
+	public List<ClusterCenterDistance> getDistanceToCluster() {
 		return distanceToCluster;
 	}
-	public void setDistanceToCluster(Map<Integer, Double> distanceToCluster) {
+
+	public void setDistanceToCluster(List<ClusterCenterDistance> distanceToCluster) {
 		this.distanceToCluster = distanceToCluster;
 	}
+
 	public List<WebSolvent> getSolvents() {
 		return solvents;
 	}
@@ -46,7 +61,7 @@ public class WebCluster implements Serializable
 	}
 	public void addClusterWithDistance(Integer cluster, double distance)
 	{
-		distanceToCluster.put(cluster, distance);
+		distanceToCluster.add(new ClusterCenterDistance(cluster, distance));
 	}
 	
 }

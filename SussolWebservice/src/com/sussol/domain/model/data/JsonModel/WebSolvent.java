@@ -8,6 +8,7 @@ public class WebSolvent implements Serializable {
 	private String name;
 	private List<Feature> features;
 	private double distanceToCluster;
+	private String predictLabel;
 	
 	public WebSolvent(String casNumber, String name, List<Feature> features, double distanceToCluster) {
 		super();
@@ -15,7 +16,20 @@ public class WebSolvent implements Serializable {
 		this.name = name;
 		this.features = features;
 		this.distanceToCluster = distanceToCluster;
+		
 	}
+	
+	
+	public String getPredictLabel() {
+		return predictLabel;
+	}
+
+
+	public void setPredictLabel(String predictLabel) {
+		this.predictLabel = predictLabel;
+	}
+
+
 	public WebSolvent() {
 		super();
 	}
