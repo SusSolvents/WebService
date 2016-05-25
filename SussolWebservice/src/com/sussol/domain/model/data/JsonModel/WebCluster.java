@@ -11,26 +11,35 @@ public class WebCluster implements Serializable
 	private int clusterNumber;
 	private List<ClusterCenterDistance> distanceToCluster;
 	private List<WebSolvent> solvents;
-	private ArrayList<Double> vectorData;
+	private ArrayList<VectorData> vectorData;
 	
 	
-	public WebCluster(int clusterNumber, ArrayList<Double> vectorData ,ArrayList<ClusterCenterDistance> arrayList2, ArrayList<WebSolvent> arrayList) {
+	
+	
+	public WebCluster(int clusterNumber, List<ClusterCenterDistance> distanceToCluster, List<WebSolvent> solvents,
+			ArrayList<VectorData> vectorData) {
 		super();
 		this.clusterNumber = clusterNumber;
-		this.distanceToCluster = arrayList2;
-		this.solvents = arrayList;
+		this.distanceToCluster = distanceToCluster;
+		this.solvents = solvents;
 		this.vectorData = vectorData;
+		
 	}
-	
-	
-	public ArrayList<Double> getVectorData() {
+
+
+
+	public ArrayList<VectorData> getVectorData() {
 		return vectorData;
 	}
 
 
-	public void setVectorData(ArrayList<Double> vectorData) {
+
+
+	public void setVectorData(ArrayList<VectorData> vectorData) {
 		this.vectorData = vectorData;
 	}
+
+
 
 
 	public int getClusterNumber() {

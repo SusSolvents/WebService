@@ -42,10 +42,11 @@ import com.sussol.domain.options.KMeansOptions;
 import com.sussol.domain.options.OptionsManager;
 import com.sussol.domain.options.SOMOptions;
 import com.sussol.domain.options.XMeansOptions;
+import com.sussol.domain.utilities.ClassifierManager;
 import com.sussol.domain.utilities.Globals;
 import com.sussol.domain.utilities.Globals.Algorithm;
 
-@RequestMapping("/api/model")
+@RequestMapping("/api")
 @RestController
 public class ServiceController {
 	
@@ -83,7 +84,7 @@ public class ServiceController {
 	    	arffGenerator.generateSubFiles();
 	}
 	
-	@RequestMapping(value = "/canopy" , method= RequestMethod.POST, consumes="multipart/form-data")
+	@RequestMapping(value = "/model/canopy" , method= RequestMethod.POST, consumes="multipart/form-data")
 	public @ResponseBody Model canopyModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "t1", defaultValue = "-1.25", required=false) String t1, @RequestParam(value = "t2", defaultValue = "-1.0", required=false) String t2)
 	{
 		initializeAPI(file);
@@ -94,7 +95,7 @@ public class ServiceController {
 		WekaModeller modeller = new WekaModeller();
 		return modeller.makeModel(Algorithm.CANOPY, canopyOptions, file.getOriginalFilename());
 	}
-	@RequestMapping(value = "/cobweb" , method= RequestMethod.POST, consumes="multipart/form-data")
+	@RequestMapping(value = "/model/cobweb" , method= RequestMethod.POST, consumes="multipart/form-data")
 	public @ResponseBody Model cobwebModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "A", defaultValue = "1.0", required=false) String A, @RequestParam(value = "C", defaultValue = "0.05", required=false) String C, @RequestParam(value = "S", defaultValue = "100", required=false) String S)
 	{
 		initializeAPI(file);
@@ -107,7 +108,7 @@ public class ServiceController {
 		return modeller.makeModel(Algorithm.COBWEB, cobwebOptions, file.getOriginalFilename());
 	}
 	
-	@RequestMapping(value = "/em" , method= RequestMethod.POST, consumes="multipart/form-data")
+	@RequestMapping(value = "/model/em" , method= RequestMethod.POST, consumes="multipart/form-data")
 	public @ResponseBody Model emModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "clusters", defaultValue = "-1.0", required=false) String clusters)
 	{
 		initializeAPI(file);
@@ -118,7 +119,7 @@ public class ServiceController {
 		return modeller.makeModel(Algorithm.EM, emOptions, file.getOriginalFilename());
 	}
 	
-	@RequestMapping(value = "/kmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
+	@RequestMapping(value = "/model/kmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
 	public @ResponseBody Model kmeansModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "clusters", defaultValue = "4", required=false) String clusters)
 	{
 		initializeAPI(file);
@@ -128,7 +129,7 @@ public class ServiceController {
 		WekaModeller modeller = new WekaModeller();
 		return modeller.makeModel(Algorithm.KMEANS, options, file.getOriginalFilename());
 	}
-	@RequestMapping(value = "/som" , method= RequestMethod.POST, consumes="multipart/form-data")
+	@RequestMapping(value = "/model/som" , method= RequestMethod.POST, consumes="multipart/form-data")
 	public @ResponseBody Model somModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "learningrate", defaultValue = "1.0", required=false) String learningrate)
 	{
 		initializeAPI(file);
@@ -139,7 +140,7 @@ public class ServiceController {
 		return modeller.makeModel(Algorithm.SOM, options, file.getOriginalFilename());
 	}
 	
-	@RequestMapping(value = "/xmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
+	@RequestMapping(value = "/model/xmeans" , method= RequestMethod.POST, consumes="multipart/form-data")
 	public @ResponseBody Model xmeansModeller(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "I", defaultValue = "1", required=false) String I,@RequestParam(value = "L", defaultValue = "2", required=false) String L,@RequestParam(value = "H", defaultValue = "4", required=false) String H)
 	{
 		initializeAPI(file);
@@ -151,6 +152,10 @@ public class ServiceController {
 		return modeller.makeModel(Algorithm.XMEANS, options, file.getOriginalFilename());
 	}
 	
-	
+	@RequestMapping(value = "/classify" , method= RequestMethod.POST)
+	public @ResponseBody ClassifiedInstance classifySolvent(@RequestParam(value = "path", required=true) String path, @RequestParam(value="featureValues", required=true) String featureValues){
+		
+		return ClassifierManager.classifySolvent(path, featureValues);
+	}
 	
 }

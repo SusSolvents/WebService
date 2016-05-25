@@ -1,6 +1,8 @@
 package com.sussol.domain.model;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -8,9 +10,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sussol.domain.model.data.Cluster;
 import com.sussol.domain.model.data.Result;
 import com.sussol.domain.model.data.SolventData;
+import com.sussol.domain.model.data.JsonModel.VectorData;
 import com.sussol.domain.model.data.JsonModel.ClusterCenterDistance;
 import com.sussol.domain.model.data.JsonModel.Feature;
 import com.sussol.domain.model.data.JsonModel.Model;
@@ -68,7 +74,7 @@ public class PostProcessor
 		}			
 	}	
 	
-	public static List<com.sussol.domain.model.data.JsonModel.WebCluster> processClusters(ClusterEvaluation evaluation)
+	public static List<com.sussol.domain.model.data.JsonModel.WebCluster> processClusters(ClusterEvaluation evaluation, Model wekaModel)
 	{								
 		String clusterResults = evaluation.clusterResultsToString();
 		
@@ -83,7 +89,7 @@ public class PostProcessor
 		{
 			ArrayList<Double> featureValues = new ArrayList<Double>();
 			String[] doubleValues = clustersAsString[i].split("\t");
-
+			ArrayList<VectorData> centroids = new ArrayList<>();
 			// j starts at 1, because index 0 is the label "Cluster n".
 			for (int j = 1; j < doubleValues.length; j++)
 			{
@@ -91,14 +97,29 @@ public class PostProcessor
 			
 				featureValues.add(new Double(doubleValues[j]));
 			}
-			System.out.println("\t");
-		
+			
 			clusters.add(new Cluster(i, featureValues));
-			webmodelClusters.add(new com.sussol.domain.model.data.JsonModel.WebCluster(i, featureValues, new ArrayList<ClusterCenterDistance>(), new ArrayList<WebSolvent>()));
+			
+			for (int u=0; u<featureValues.size(); u++) {
+				
+				centroids.add(new VectorData(featureValues.get(u), Globals.featureNames.get(u)));
+			}
+			webmodelClusters.add(new com.sussol.domain.model.data.JsonModel.WebCluster(i, new ArrayList<ClusterCenterDistance>(), new ArrayList<WebSolvent>(), centroids));
 		}
+		writeClustersToFile(clusters, wekaModel);
 		return webmodelClusters;
 	}
 	
+	private static void writeClustersToFile(ArrayList<Cluster> clusters2, Model wekaModel) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writeValue(new File(wekaModel.getModelPath() + ".json"), clusters2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		
+	}
+
 	public static void ProcessClusterAssignments(ClusterEvaluation evaluation, Algorithm algorithm, Model wekaModel)
 	{
 		/*
@@ -151,7 +172,7 @@ public class PostProcessor
 			double distance = MathManager.getEuclideanDistance(solvent.getFeatureValues(), cluster.getFeatureValues());	
 			
 			// String formattedString = String.format("%4d\t%100s\t%20s\t%2d", i, tempMetaData.getName(), tempMetaData.getCasNr(), results.get(i).getClusterNumber());
-			String formattedString = String.format("%d\t%s\t%s\t%d\t%f", i, solvent.getName(), solvent.getCasNr(), results.get(i).getClusterNumber(), distance);
+			String formattedString = String.format("%d\t%s\t%s\t%d\t%f", i, solvent.getID_Name_1(), solvent.getID_CAS_Nr_1(), results.get(i).getClusterNumber(), distance);
 			LiatoLogger.getInstance().info(formattedString);
 			
 			List<Feature> features = new ArrayList<>();
@@ -160,8 +181,9 @@ public class PostProcessor
 				features.add(feature);
 			}
 			com.sussol.domain.model.data.JsonModel.WebCluster cluster2 = wekaModel.getClusterWithNumber(results.get(i).getClusterNumber());
-			WebSolvent webSolvent = new WebSolvent(solvent.getCasNr(), solvent.getName(), features ,distance);
+			WebSolvent webSolvent = new WebSolvent(solvent.getID_CAS_Nr_1(), solvent.getID_Name_1(), features ,distance, solvent.getLabel(), solvent.getID_Name_1(), solvent.getID_CAS_Nr_1(), solvent.getID_EG_Nr(), solvent.getID_EG_Annex_Nr(), solvent.getInput());
 			webSolvent.setPredictLabel(solvent.getLabel());
+			
 			cluster2.addSolvent(webSolvent);
 		}
 		
@@ -183,7 +205,7 @@ public class PostProcessor
 			double distance = MathManager.getEuclideanDistance(solvent.getFeatureValues(), cluster.getFeatureValues());	
 			
 			// String formattedString = String.format("%4d\t%100s\t%20s\t%2d", i, tempMetaData.getName(), tempMetaData.getCasNr(), results.get(i).getClusterNumber());
-			String formattedString = String.format("%d\t%s\t%s\t%d\t%f", i, solvent.getName(), solvent.getCasNr(), results.get(i).getClusterNumber(), distance);
+			String formattedString = String.format("%d\t%s\t%s\t%d\t%f", i, solvent.getID_Name_1(), solvent.getID_CAS_Nr_1(), results.get(i).getClusterNumber(), distance);
 			LiatoLogger.getInstance().info(formattedString);			
 		}
 				

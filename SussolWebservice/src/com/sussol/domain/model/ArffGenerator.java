@@ -48,7 +48,7 @@ public class ArffGenerator
             
             for(int i = 6; i<attributes.length; i++)
             {
-            	System.out.println(attributes[i] + " original ");
+            	
             	String featureName = attributes[i].replaceAll("°", "Degrees");
             	featureName = featureName.replaceAll("/", "_");
             	
@@ -57,22 +57,20 @@ public class ArffGenerator
             	
             	featureName = featureName.replaceAll("\\.", "_");
             	Globals.featureNames.add(featureName);
-            	System.out.println(featureName);
+            	
             }
-            
-			arffStream.write("% NumberOfFeatures : " + (attributes.length - 3) + "\n\n");
+			arffStream.write("% NumberOfFeatures : " + attributes.length + "\n\n");
 			
             for (int i = 0; i < attributes.length; i++)
             {
                 switch (i)
                 {
                     case 0: // Input
+                    case 1: // ID_Name_1
+                    case 2: // Label
+                    case 3: // ID_CAS_Nr_1
                     case 4: // ID_EG_Nr
                     case 5: // ID_EG_Annex_Nr
-                        break;
-                    case 1: // ID_Name_1
-                    case 2: // Label Hannes
-                    case 3: // ID_CAS_Nr_1
                     	arffStream.write("@Attribute " + attributes[i] + " string\n");
                     	break;
                     default:
@@ -94,13 +92,12 @@ public class ArffGenerator
 	            {
 	                switch (featureNumber)
 	                {
-	                    case 0: // Input	                    
+		                case 0: // Input
+	                    case 1: // ID_Name_1
+	                    case 2: // Label
+	                    case 3: // ID_CAS_Nr_1
 	                    case 4: // ID_EG_Nr
 	                    case 5: // ID_EG_Annex_Nr
-	                        break;
-	                    case 1: // ID_Name_1
-	                    case 2: // Label Hannes
-	                    case 3: // ID_CAS_Nr_1
 	                    	arffStream.write('"' + values[featureNumber] + '"' + "|");
 	                    	break;	                    		                    		                   
 	                    default:
@@ -158,7 +155,7 @@ public class ArffGenerator
 			if (! file.exists()) 
 			{
 				file.createNewFile();
-			}
+			}			
 			// Only data, for logging after the model has been made. Pipe separated.
 			BufferedWriter arffStreamOnlyData = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
 
@@ -169,7 +166,7 @@ public class ArffGenerator
 			{
 				file.createNewFile();
 			}
-			// Only data (no Name, Label or CasNr), for training and making the model. Comma-separated.
+			// Only data (no MetaData), for training and making the model. Comma-separated.
 			BufferedWriter arffStreamData = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
 					
 			// Skip the first 4 lines.
@@ -182,13 +179,17 @@ public class ArffGenerator
 			tempLine = tempLine.substring(tempLine.indexOf(':') + 2, tempLine.length());
 			int nrOfFeatures = Integer.parseInt(tempLine);
 			
-			arffStreamData.write("% Number of features : " + (nrOfFeatures - 3) + "\n");
+			// There are 6 metadata features, which should not be included in the Data file.
+			arffStreamData.write("% Number of features : " + (nrOfFeatures - 6) + "\n");
 			
 			arffStreamData.write(arffStream.readLine() + "\n");
-			arffStream.readLine();	// ID_Name
+			arffStream.readLine();	// Input
+			arffStream.readLine();	// ID_Name_1
 			arffStream.readLine();	// Label
 			arffStream.readLine();	// ID_CAS_Nr_1
-			for (int i=0; i < nrOfFeatures - 3; i++)
+			arffStream.readLine();	// ID_EG_Nr
+			arffStream.readLine();	// ID_EG_Annex_Nr
+			for (int i=6; i < nrOfFeatures; i++)
 			{
 				arffStreamData.write(arffStream.readLine() + "\n");
 			}

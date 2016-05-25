@@ -2,6 +2,7 @@ package com.sussol.domain.utilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Globals
@@ -16,4 +17,16 @@ public class Globals
 	public static String pathToArffFileData = "";
 	public static List<String> featureNames;
 
+	public static double[] convertDoubles(List<Double> doubles)
+	{
+	    double[] ret = new double[doubles.size()];
+	    Iterator<Double> iterator = doubles.iterator();
+	    int i = 0;
+	    while(iterator.hasNext())
+	    {
+	        ret[i] = iterator.next();
+	        i++;
+	    }
+	    return ret;
+	}
 }

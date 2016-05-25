@@ -4,9 +4,15 @@ import java.util.ArrayList;
 
 public class Cluster 
 {
-	private int number;	
-	private ArrayList<Double> featureValues;
+	public int number;	
+	public ArrayList<Double> featureValues;
 	
+	
+	
+	public Cluster() {
+		super();
+	}
+
 	public Cluster(int number, ArrayList<Double> featureValues) 
 	{
 		this.number = number;

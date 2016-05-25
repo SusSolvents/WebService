@@ -88,11 +88,12 @@ public class WekaModeller
 			switch (algorithm)
 			{
 				case CANOPY:
-					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
 										
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " Canopy.model", clusterer);
-					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " Canopy.model");		
+					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " Canopy.model");
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation, wekaModel));
 					break;
 				case COBWEB:
 					PostProcessor.ProcessClustersCobWeb(evaluation);
@@ -104,42 +105,43 @@ public class WekaModeller
 				case DBSCAN:					
 					break;
 				case EM:
-					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " EM.model", clusterer);
 					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " EM.model");
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation, wekaModel));
 					break;
 				case KMEANS:
-					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " KMeans.model", clusterer);
 					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " KMeans.model");
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation, wekaModel));
 					break;
 				case SOM:
-					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " SOM.model", clusterer);
 					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " SOM.model");
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation, wekaModel));
 					break;
 				case XMEANS:
-					wekaModel.setClusters(PostProcessor.processClusters(evaluation));
+					
 					
 					// Serialize the model to disk.		
 					SerializationHelper.write(STORAGE_PATH  + modelFileName + " XMEANS.model", clusterer);
 					wekaModel.setModelPath(STORAGE_PATH + modelFileName + " XMEANS.model");
-					
+					wekaModel.setClusters(PostProcessor.processClusters(evaluation, wekaModel));
 					break;
 				default:
 					break;
 			}	
 			
 			PostProcessor.ProcessClusterAssignments(evaluation, algorithm, wekaModel);
-			
 			return wekaModel;
-
 		} 
 		catch (Exception e) { e.printStackTrace(); }				
 		return null;
