@@ -37,6 +37,5 @@ public class SussolController {
 	      ex.printStackTrace();
 	      throw new RuntimeException("IOError writing file to output stream");
 	    }
-
 	}
 }
